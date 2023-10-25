@@ -1,0 +1,4 @@
+allure-pytest
+requests~=2.31.0
+pytest==7.4.2
+beautifulsoup4~=4.12.2
