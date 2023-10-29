@@ -1,6 +1,5 @@
 import random
 import string
-from datetime import datetime
 import pytest
 import requests
 from lib.base_case import BaseCase
@@ -23,21 +22,9 @@ names = (''.join(random.choice(letters) for i in range(251)), ''.join(random.cho
 
 class TestUserRegister(BaseCase):
 
-    def setup(self):
-        base_part = 'learnqa'
-        domain = 'example.com'
-        random_part = datetime.now().strftime("%m%d%Y%H%M%S")
-        self.email = f"{base_part}{random_part}@{domain}"
-
     def test_create_user_with_existing_email(self):
         email = 'vinkotov@example.com'
-        data = {
-            'password': '123',
-            'username': 'learnqa',
-            'firstName': 'learnqa',
-            'lastName': 'learnqa',
-            'email': email
-        }
+        data = self.prepare_registration_data(email)
         response = requests.post("https://playground.learnqa.ru/api/user/", data=data, verify=False)
         Assertions.assert_status_code(response, 400)
         assert response.content.decode(
@@ -71,14 +58,7 @@ class TestUserRegister(BaseCase):
                 'UTF8') == f"The value of 'username' field is too short", f"No limit on name length. Length - {len(name)}"
 
     def test_create_user_successfully(self):
-        data = {
-            'password': '123',
-            'username': 'learnqa',
-            'firstName': 'learnqa',
-            'lastName': 'learnqa',
-            'email': self.email
-        }
-
+        data = self.prepare_registration_data()
         response = requests.post("https://playground.learnqa.ru/api/user/", data=data, verify=False)
         Assertions.assert_status_code(response, 200)
         Assertions.assert_json_has_key(response, "id")
