@@ -1,11 +1,13 @@
 import time
-
+import allure
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
 from lib.my_requests import MyRequests
 
 
+@allure.epic('Tests to verify the delete method')
 class TestUserDelete(BaseCase):
+    @allure.description('This test checks for deleting a user without authorization')
     def test_delete_user_no_auth(self):
         data = {
             'email': 'vinkotov@example.com',
@@ -21,6 +23,7 @@ class TestUserDelete(BaseCase):
         Assertions.assert_status_code(response, 400)
         assert response.text == 'Please, do not delete test users with ID 1, 2, 3, 4 or 5.', 'You can delete test users with ID 1, 2, 3, 4 or 5.'
 
+    @allure.description('This test verifies that the user was deleted correctly')
     def test_delete_user_successfully(self):
         # REGISTER
         register_data = self.prepare_registration_data()
@@ -53,6 +56,7 @@ class TestUserDelete(BaseCase):
         Assertions.assert_status_code(response, 404)
         assert response.text == 'User not found', 'The user was not deleted'
 
+    @allure.description('This test checks for user deletion when the deletor is authorized with different credentials')
     def test_delete_user_by_another_user(self):
         # REGISTER USER 0
         register_data = self.prepare_registration_data()
